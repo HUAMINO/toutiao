@@ -4,11 +4,13 @@
     :finished="finished"
     finished-text="没有更多了"
     @load="onLoad"
+    :immediate-check="false"
   >
     <comment-item
       v-for="(item, index) in list"
       :key="index"
       :comment="item"
+      @reply-click="$emit('reply-click', $event)"
     />
   </van-list>
 </template>
@@ -27,9 +29,17 @@ export default {
     list: {
       type: Array,
       default: () => []
+    },
+    type: {
+      type: String,
+      validate (value) {
+        return ['a', 'c'].includes(value)
+      },
+      default: 'a'
     }
   },
   created () {
+    this.loading = true
     this.onLoad()
   },
   data () {
@@ -46,7 +56,7 @@ export default {
       try {
         //  1. 请求获取数据
         const { data } = await getCommentsAPI({
-          type: 'a',
+          type: this.type,
           source: this.source,
           offset: this.offset,
           limit: this.limit
@@ -78,6 +88,6 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 
 </style>

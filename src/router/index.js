@@ -46,6 +46,11 @@ const routes = [
     name: 'article',
     props: true, // 开启 Props 传参，说白了就是把路由参数映射到组件中
     component: () => import('../views/article/article.vue') // 懒加载
+  },
+  {
+    path: '/user/profile',
+    name: 'user-profile',
+    component: () => import('../views/user-profile/user-profile.vue') // 懒加载
   }
   // {
   //   path: '/about',

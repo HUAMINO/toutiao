@@ -59,6 +59,7 @@
           :source="article.art_id"
           :list = "commentList"
           @onload-success="totalCommentCount = $event.total_count"
+          @reply-click="onReplyClick"
         ></comment-list>
         <!-- 底部区域 -->
         <div class="article-bottom">
@@ -118,6 +119,18 @@
       <!-- /加载失败：其它未知错误（例如网络原因或服务端异常） -->
     </div>
 
+<!--  品轮回复  -->
+    <van-popup
+      v-model="isReplyShow"
+      position="bottom"
+      style="height: 100%"
+    >
+      <comment-reply
+        v-if="isReplyShow"
+        :comment="currentComment"
+        @close="isReplyShow = false"
+      ></comment-reply>
+    </van-popup>
   </div>
 </template>
 
@@ -129,6 +142,7 @@ import ColloctArticle from '@/components/collect-article'
 import LikeArticle from '../../components/like-article.vue'
 import CommentList from '@/views/article/components/comment-list'
 import CommentPost from '@/views/article/components/comment-post'
+import CommentReply from '@/views/article/components/comment-reply'
 export default {
   name: 'ArticleIndex',
   components: {
@@ -136,12 +150,18 @@ export default {
     ColloctArticle,
     LikeArticle,
     CommentList,
-    CommentPost
+    CommentPost,
+    CommentReply
   },
   props: {
     articleId: {
       type: [Number, String, Object],
       required: true
+    }
+  },
+  provide () {
+    return {
+      articleId: this.articleId
     }
   },
   data () {
@@ -152,7 +172,9 @@ export default {
       followLoading: false,
       totalCommentCount: 0,
       isPostShow: false,
-      commentList: []
+      commentList: [],
+      isReplyShow: false,
+      currentComment: {} // 当前点击回复的品轮项
     }
   },
   computed: {},
@@ -201,6 +223,11 @@ export default {
       this.isPostShow = false
       //  将发布类容显示到列表顶部
       this.commentList.unshift(data.new_obj)
+    },
+    onReplyClick (comment) {
+      console.log(comment)
+      this.isReplyShow = true
+      this.currentComment = comment
     }
   }
 }

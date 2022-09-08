@@ -12,20 +12,29 @@
     />
     <van-button
       class="post-btn"
+      v-model.trim="message"
       size="small"
       @click="onPost"
+      :disabled="!message.length"
     >发布</van-button>
   </div>
 </template>
 
 <script>
 import { addCommentAPI } from '@/api/index'
+import { Toast } from 'vant'
 export default {
   name: 'CommentPost',
   props: {
     target: {
       type: String,
       default: ''
+    }
+  },
+  inject: {
+    articleId: {
+      type: [String, Number, Object],
+      default: null
     }
   },
   data () {
@@ -35,15 +44,21 @@ export default {
   },
   methods: {
     async onPost () {
+      Toast.loading({
+        message: '发布中...',
+        forbidClick: true, // 禁用背景点击
+        duration: 0 // 持续时间， 默认是2000
+      })
       try {
         const { data } = await addCommentAPI({
           target: this.target,
           content: this.message,
-          art_id: null
+          art_id: this.articleId
         })
         console.log(data)
         this.message = ''
         this.$emit('post-success', data.data)
+        this.$toast.success('发布成功')
       } catch (e) {
         this.$toast.fail('发布失败')
       }
