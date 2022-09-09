@@ -11,12 +11,19 @@
       </template>
     </van-nav-bar>
 <!--  跟人信息  -->
+    <input
+      type="file"
+      hidden
+      ref="file"
+      @change="onFileChange"
+    />
     <van-cell title="头像" is-link>
       <van-image
         class="avatar"
         fit="cover"
         round
         :src="user.photo"
+        @click="$refs.file.click()"
       />
     </van-cell>
     <van-cell
@@ -39,7 +46,20 @@
       is-link
       @click="isUpdateBirthdayShow = true"
     ></van-cell>
-<!--  编辑昵称  -->
+    <!--   编辑头像   -->
+    <van-popup
+      v-model="isUpdatePhotoShow"
+      position="bottom"
+      style="height: 100%"
+
+    >
+      <update-photo
+        @close="isUpdatePhotoShow = false"
+        :img="img"
+        @update-photo="user.photo = $event"
+      ></update-photo>
+    </van-popup>
+    <!--  编辑昵称  -->
     <van-popup
       v-model="isUpdateNameShow"
       style="height: 100%"
@@ -81,6 +101,7 @@ import { getUserProfileAPI } from '@/api/index'
 import UpdateName from '@/views/user-profile/components/update-name'
 import UpdateGender from '@/views/user-profile/components/update-gender'
 import UpdateBirthdaty from '@/views/user-profile/components/update-birthdaty'
+import UpdatePhoto from '@/views/user-profile/components/update-photo'
 export default {
   name: 'user-profile',
   data () {
@@ -88,7 +109,9 @@ export default {
       user: {},
       isUpdateNameShow: false,
       isUpdateGenderShow: false,
-      isUpdateBirthdayShow: false
+      isUpdateBirthdayShow: false,
+      isUpdatePhotoShow: false,
+      img: null
     }
   },
   created () {
@@ -103,17 +126,28 @@ export default {
       } catch (e) {
         this.$toast('获取数据失败')
       }
+    },
+    onFileChange () {
+    //  获取文件对象
+      const file = this.$refs.file.files[0]
+      //  基于文章对象获取 blob 数据
+      this.img = window.URL.createObjectURL(file)
+      // 展示预览图片弹出层
+      this.isUpdatePhotoShow = true
+      //  file-input 如果选择了同一个文件不会触发change事件
+      this.$refs.file.value = ''
     }
   },
   components: {
     UpdateName,
     UpdateGender,
-    UpdateBirthdaty
+    UpdateBirthdaty,
+    UpdatePhoto
   }
 }
 </script>
-
 <style lang="less" scoped>
+
 .user-profile {
   :deep( .van-nav-bar .van-icon ) {
     color: #fff !important;

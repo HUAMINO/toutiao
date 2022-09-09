@@ -1,4 +1,4 @@
-import { login, getSmsCode, getUserInfo, getUserChannels, addFollow, deleteFollow, getUserProfile, updateUserProfile } from '@/api/user'
+import { login, getSmsCode, getUserInfo, getUserChannels, addFollow, deleteFollow, getUserProfile, updateUserProfile, updateUserPhoto } from '@/api/user'
 import { getArticles, getArticleById, addCollect, deleteCollect, addLike, deleteLike } from '@/api/article'
 import { addUserChannel, deleteUserChannel, getAllChannels } from '@/api/channel'
 import { getSearchSuggestions, getSearchResult } from '@/api/search'
@@ -28,3 +28,4 @@ export const deleteCommentLikeAPI = deleteCommentLike
 export const addCommentAPI = addComment
 export const getUserProfileAPI = getUserProfile
 export const updateUserProfileAPI = updateUserProfile
+export const updateUserPhotoAPI = updateUserPhoto
